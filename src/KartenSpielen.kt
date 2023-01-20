@@ -1,3 +1,5 @@
+import kotlin.system.exitProcess
+
 //Auf gehts eine Runde BlackJack! Hier ist ein vollständiges Kartendeck.
 val kartendeck: List<String> = listOf(
     "Pik Ass", "Pik Koenig", "Pik Dame", "Pik Bube", "Pik 10", "Pik 9",
@@ -18,6 +20,20 @@ fun main() {
     Mit der Funktion kartenWert() bekommst du den Wert einer Karte als Int zurück.
     Unter dem Kommentar siehst du wie du die Funktionen benutzen kannst.
      */
+    println("Willkommen bei BlackJack!")
+    println("Wie viel möchtest du einsetzen ?")
+    var eingabePruefung = false
+    var einsatz = 0
+
+    while(!eingabePruefung) {
+        try {
+            var einsatz = readln().toInt()
+            eingabePruefung = true
+        } catch (e: Exception) {
+            println("Bitte gebe einen gültigen Wert ein!")
+        }
+    }
+
     var meinDeck = kartendeck.toMutableList()
     mischen(meinDeck)
 
@@ -25,7 +41,8 @@ fun main() {
     var handSpieler = erzeugeHand(meinDeck, 1)
 
     if(gesamtwertHand(handSpieler) == 21){
-        println("Du hast das Spiel beim ersten zug gewonnen da deine Karten einen Gesamtwert von ${gesamtwertHand(handSpieler)} haben!")
+        println("\nDu hast das Spiel beim ersten zug gewonnen da deine Karten einen Gesamtwert von ${gesamtwertHand(handSpieler)} haben!")
+        exitProcess(0)
     }
 
     var stand = false
@@ -36,21 +53,28 @@ fun main() {
 
     if(gesamtwertHand(handSpieler) > 21){
         println("Du hast das Spiel verloren und einen Gesamtwert von ${gesamtwertHand(handSpieler)} erreicht!")
+        einsatz = 0
+        print("\nDu hast deinen Einsatz von $einsatz verloren ..\nHalt dich fern von Glücksspielen!")
     }else if(gesamtwertHand(handSpieler) <= 21 && gesamtwertHand(handComputer) > 21){
         println("Du hast das Spiel gewonnen und einen Gesamtwert von ${gesamtwertHand(handSpieler)} erreicht!")
         println("Der Computer hat hingegen den Wert ${gesamtwertHand(handComputer)} erreicht!")
+        einsatz *= 2
+        print("\nDein Einsatz hat sich verdoppelt auf $einsatz")
     }else if(gesamtwertHand(handSpieler) <= 21 && gesamtwertHand(handComputer) <= 21){
         if(gesamtwertHand(handSpieler) > gesamtwertHand(handComputer)){
             println("\nDu hast das Spiel gewonnen!")
             println("Du hast einen Gesamtwert von ${gesamtwertHand(handSpieler)}")
             println("Der Computer hat einen Gesamtwert von ${gesamtwertHand(handComputer)}")
+            einsatz *= 2
+            print("\nDein Einsatz hat sich verdoppelt auf $einsatz")
         }else if(gesamtwertHand(handSpieler) < gesamtwertHand(handComputer)){
             println("\nDu hast das Spiel verloren!")
             println("Du hast einen Gesamtwert von ${gesamtwertHand(handSpieler)}")
             println("Der Computer hat einen Gesamtwert von ${gesamtwertHand(handComputer)}")
+            einsatz = 0
+            print("\nDu hast deinen Einsatz von $einsatz verloren ..\nHalt dich fern von Glücksspielen!")
         }
     }
-
 }
 
 fun mischen(deck: MutableList<String>) {
@@ -101,7 +125,7 @@ fun erzeugeHand(deck: MutableList<String>, player: Int): MutableList<String>{
     mischen(deck)
 
     if(player == 0){
-        println("Die stärkere Karte des Gegners hat einen Wert von: ${wertGroessterKarte(hand)}\n")
+        println("\nDie stärkere Karte des Gegners hat einen Wert von: ${wertGroessterKarte(hand)}\n")
     }else if(player == 1){
         println("Du hast die Karte: -$karte1- und die Karte: -$karte2- gezogen!")
         println("Deine Karten haben einen Gesamtwert von ${gesamtwertHand(hand)}")
